@@ -1,6 +1,7 @@
 package com.tododo.controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 import com.tododo.model.Task;
 import javafx.collections.FXCollections;
@@ -16,7 +17,7 @@ public class AddTaskDialogController {
     @FXML private ComboBox<String> statusComboBox;
 
     private Task resultTask;
-    private boolean isEditMode = false;
+    private boolean isEditMode = false; // This flag will now be used correctly
 
     public Task getResultTask() {
         return resultTask;
@@ -39,14 +40,15 @@ public class AddTaskDialogController {
             return;
         }
 
+        // Check if we are in edit mode
         if (isEditMode && resultTask != null) {
-            // Update task lama
+            // Update the existing task object
             resultTask.setTitle(title);
             resultTask.setDescription(description);
             resultTask.setStatus(status);
             resultTask.setDeadline(deadline);
         } else {
-            // Buat task baru
+            // Create a new task object
             resultTask = new Task(title, description, status, deadline);
         }
 
@@ -55,7 +57,7 @@ public class AddTaskDialogController {
 
     @FXML
     private void handleCancel() {
-        resultTask = null;
+        resultTask = null; // Ensure no task is returned on cancel
         closeDialog();
     }
 
@@ -72,15 +74,27 @@ public class AddTaskDialogController {
         alert.showAndWait();
     }
 
- // AddTaskDialogController.java
+    /**
+     * Sets the dialog to edit mode and pre-fills the fields with task data.
+     * @param selectedTask The task to be edited.
+     */
     public void setEditMode(Task selectedTask) {
+        // FIX 1: Set the mode to true
+        this.isEditMode = true; 
+        this.resultTask = selectedTask; // Keep a reference to the task to be edited
+
         judulField.setText(selectedTask.getTitle());
         deskripsiField.setText(selectedTask.getDescription());
-        deadlinePicker.setValue(LocalDate.parse(selectedTask.getDeadline()));
         statusComboBox.setValue(selectedTask.getStatus());
-
-        // Ketika tombol simpan ditekan, update task, bukan buat baru
-        this.resultTask = selectedTask;
+        
+        // FIX 2: Handle empty or null deadlines safely
+        if (selectedTask.getDeadline() != null && !selectedTask.getDeadline().isEmpty()) {
+            try {
+                deadlinePicker.setValue(LocalDate.parse(selectedTask.getDeadline()));
+            } catch (DateTimeParseException e) {
+                System.err.println("Could not parse date: " + selectedTask.getDeadline());
+                deadlinePicker.setValue(null);
+            }
+        }
     }
-
 }

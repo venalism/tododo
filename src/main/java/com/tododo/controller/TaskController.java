@@ -126,6 +126,7 @@ public class TaskController {
         }
     }
 
+ // In TaskController.java
     @FXML
     private void handleEditTask() {
         if (selectedTask != null) {
@@ -134,7 +135,8 @@ public class TaskController {
                 Parent root = loader.load();
 
                 AddTaskDialogController controller = loader.getController();
-                controller.setEditMode(selectedTask);
+                // This sets the dialog to edit mode and passes the selected task
+                controller.setEditMode(selectedTask); 
 
                 Stage dialogStage = new Stage();
                 dialogStage.initModality(Modality.APPLICATION_MODAL);
@@ -142,26 +144,32 @@ public class TaskController {
                 dialogStage.setScene(new Scene(root));
                 dialogStage.showAndWait();
 
-                Task edited = controller.getResultTask();
-                if (edited != null) {
-                    selectedTask.setTitle(edited.getTitle());
-                    selectedTask.setDescription(edited.getDescription());
-                    selectedTask.setDeadline(edited.getDeadline());
-                    selectedTask.setStatus(edited.getStatus());
+                // The controller's getResultTask() will now return the *updated* task
+                Task editedTask = controller.getResultTask();
 
-                    TaskDAO.updateTask(selectedTask);
-                    tasks.setAll(TaskDAO.getAllTasks());
-                    refreshTaskList(tasks);
-                    showAlert("Berhasil", "Tugas berhasil diperbarui.");
+                // Check if the user saved the changes (result is not null)
+                if (editedTask != null) {
+                    // The task object is already updated, so we just need to save it to the DB
+                    boolean success = TaskDAO.updateTask(editedTask);
+                    if (success) {
+                        // Refresh the entire list to show the change
+                        tasks.setAll(TaskDAO.getAllTasks());
+                        refreshTaskList(tasks);
+                        showAlert("Berhasil", "Tugas berhasil diperbarui.");
+                    } else {
+                        showAlert("Gagal", "Gagal menyimpan perubahan ke database.");
+                    }
                 }
+                // If the user cancelled, editedTask will be null, and we do nothing.
+
             } catch (IOException e) {
                 e.printStackTrace();
+                showAlert("Error", "Gagal membuka dialog edit.");
             }
         } else {
             showAlert("Gagal", "Tidak ada tugas yang dipilih.");
         }
     }
-
     
     @FXML
     private void handleClearFields() {
