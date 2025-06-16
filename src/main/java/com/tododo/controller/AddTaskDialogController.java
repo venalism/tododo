@@ -1,4 +1,5 @@
-// venalism/tododo/tododo-1e05b0edeac7f84d716f453011836aa667953f71/src/main/java/com/tododo/controller/AddTaskDialogController.java
+// src/main/java/com/tododo/controller/AddTaskDialogController.java
+
 package com.tododo.controller;
 
 import com.tododo.model.Task;
@@ -46,8 +47,7 @@ public class AddTaskDialogController {
         deskripsiField.setText(taskToEdit.getDescription());
         statusComboBox.setValue(taskToEdit.getStatus());
 
-        // --- THIS IS THE FIX ---
-        // Only parse the deadline if it is not null and not an empty string.
+        // FIX: Only parse the deadline if it is not null and not an empty string.
         String deadline = taskToEdit.getDeadline();
         if (deadline != null && !deadline.isEmpty()) {
             try {
@@ -66,7 +66,6 @@ public class AddTaskDialogController {
         String title = judulField.getText().trim();
         String description = deskripsiField.getText().trim();
         String status = statusComboBox.getValue();
-        // Ensure deadline is an empty string if the picker is empty
         String deadline = deadlinePicker.getValue() != null ? deadlinePicker.getValue().toString() : "";
 
         if (title.isEmpty() || status == null) {
@@ -75,13 +74,13 @@ public class AddTaskDialogController {
         }
 
         if (isEditMode) {
-            // If in edit mode, update the properties of the existing task object
+            // In edit mode, update the properties of the existing task object
             resultTask.setTitle(title);
             resultTask.setDescription(description);
             resultTask.setStatus(status);
             resultTask.setDeadline(deadline);
         } else {
-            // If in add mode, create a new task object
+            // In add mode, create a new task object
             resultTask = new Task(title, description, status, deadline);
         }
 
