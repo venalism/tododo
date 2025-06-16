@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class AddTaskDialogController {
 
@@ -44,8 +45,19 @@ public class AddTaskDialogController {
         judulField.setText(taskToEdit.getTitle());
         deskripsiField.setText(taskToEdit.getDescription());
         statusComboBox.setValue(taskToEdit.getStatus());
-        if (taskToEdit.getDeadline() != null && !taskToEdit.getDeadline().isEmpty()) {
-            deadlinePicker.setValue(LocalDate.parse(taskToEdit.getDeadline()));
+
+        // --- THIS IS THE FIX ---
+        // Only parse the deadline if it is not null and not an empty string.
+        String deadline = taskToEdit.getDeadline();
+        if (deadline != null && !deadline.isEmpty()) {
+            try {
+                deadlinePicker.setValue(LocalDate.parse(deadline));
+            } catch (DateTimeParseException e) {
+                System.err.println("Could not parse deadline: " + deadline);
+                deadlinePicker.setValue(null); // Set to null if parsing fails
+            }
+        } else {
+            deadlinePicker.setValue(null);
         }
     }
 
@@ -54,6 +66,7 @@ public class AddTaskDialogController {
         String title = judulField.getText().trim();
         String description = deskripsiField.getText().trim();
         String status = statusComboBox.getValue();
+        // Ensure deadline is an empty string if the picker is empty
         String deadline = deadlinePicker.getValue() != null ? deadlinePicker.getValue().toString() : "";
 
         if (title.isEmpty() || status == null) {
