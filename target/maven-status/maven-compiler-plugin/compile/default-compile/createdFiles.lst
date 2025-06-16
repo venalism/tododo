@@ -1,8 +1,13 @@
 com\tododo\model\Task.class
+com\tododo\db\UserDAO.class
+com\tododo\controller\RegisterController.class
 com\tododo\controller\TaskItemController.class
+com\tododo\controller\LoginController.class
 com\tododo\db\DatabaseConnection.class
 com\tododo\db\TaskDAO.class
+com\tododo\utils\PasswordUtils.class
 com\tododo\controller\AddTaskDialogController.class
 com\tododo\controller\DeleteTaskDialogController.class
 com\tododo\controller\TaskController.class
 com\tododo\model\Main.class
+com\tododo\model\User.class

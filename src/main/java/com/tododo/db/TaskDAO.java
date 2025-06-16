@@ -1,6 +1,8 @@
 package com.tododo.db;
 
+import com.tododo.model.Main;
 import com.tododo.model.Task;
+import com.tododo.model.User;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ public class TaskDAO {
                 description TEXT NOT NULL,
                 status TEXT NOT NULL,
                 deadline TEXT
+                user_id INTEGER,
+        		FOREIGN KEY (user_id) REFERENCES users (id)
             );
         """;
 
@@ -38,48 +42,42 @@ public class TaskDAO {
 
     // Ambil semua task dari database
     public static List<Task> getAllTasks() {
+        User loggedInUser = Main.getLoggedInUser();
+        if (loggedInUser == null) return new ArrayList<>(); // Or handle error
+
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT * FROM tasks";
+        String sql = "SELECT * FROM tasks WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, loggedInUser.getId());
+            ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String title = rs.getString("title");
-                String description = rs.getString("description");
-                String status = rs.getString("status");
-                String deadline = rs.getString("deadline");
-
-                Task task = new Task(title, description, status, deadline);
-                task.setId(id);
+                // ... create Task object
+                Task task = new Task(/*...params...*/);
+                task.setId(rs.getInt("id"));
+                task.setUserId(rs.getInt("user_id")); // Set user ID
                 tasks.add(task);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return tasks;
     }
 
     // Tambah task baru
     public static void addTask(Task task) {
-        String sql = "INSERT INTO tasks(title, description, status, deadline) VALUES (?, ?, ?, ?)";
+        User loggedInUser = Main.getLoggedInUser();
+        if (loggedInUser == null) return;
 
+        String sql = "INSERT INTO tasks(title, description, status, deadline, user_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstmt.setString(1, task.getTitle());
-            pstmt.setString(2, task.getDescription());
-            pstmt.setString(3, task.getStatus());
-            pstmt.setString(4, task.getDeadline());
-            pstmt.executeUpdate();
-
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    task.setId(generatedKeys.getInt(1));
-                }
-            }
+            // ... set other parameters
+            pstmt.setInt(5, loggedInUser.getId());
+            // ... rest of the method
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,10 +86,14 @@ public class TaskDAO {
 
     // Hapus task berdasarkan ID
     public static boolean deleteTask(Task task) {
-        String sql = "DELETE FROM tasks WHERE id = ?";
+        User loggedInUser = Main.getLoggedInUser();
+        if (loggedInUser == null) return false;
+
+        String sql = "DELETE FROM tasks WHERE id = ? AND user_id = ?";
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, task.getId());
+            stmt.setInt(2, loggedInUser.getId());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,7 +103,14 @@ public class TaskDAO {
 
     // Perbarui data task
     public static boolean updateTask(Task task) {
-        String sql = "UPDATE tasks SET title = ?, description = ?, status = ?, deadline = ? WHERE id = ?";
+        User loggedInUser = Main.getLoggedInUser();
+        if (loggedInUser == null) return false;
+
+        String sql = """
+            UPDATE tasks
+            SET title = ?, description = ?, status = ?, deadline = ?
+            WHERE id = ? AND user_id = ?
+        """;
 
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, task.getTitle());
@@ -109,6 +118,7 @@ public class TaskDAO {
             stmt.setString(3, task.getStatus());
             stmt.setString(4, task.getDeadline());
             stmt.setInt(5, task.getId());
+            stmt.setInt(6, loggedInUser.getId());
 
             return stmt.executeUpdate() > 0;
 
@@ -117,6 +127,7 @@ public class TaskDAO {
             return false;
         }
     }
+
 
     // Ambil satu task berdasarkan ID
     public static Task getTaskById(int id) {

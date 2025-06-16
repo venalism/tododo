@@ -1,8 +1,13 @@
 C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\db\TaskDAO.java
 C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\controller\TaskItemController.java
 C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\model\Main.java
+C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\controller\LoginController.java
+C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\utils\PasswordUtils.java
+C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\model\Task.java
+C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\controller\RegisterController.java
 C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\controller\AddTaskDialogController.java
+C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\db\UserDAO.java
 C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\db\DatabaseConnection.java
+C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\model\User.java
 C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\controller\DeleteTaskDialogController.java
 C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\controller\TaskController.java
-C:\Users\NADI\Downloads\TododoJavaFX\src\main\java\com\tododo\model\Task.java

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tododo.controller.RegisterController" spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+    <Label text="Register" style="-fx-font-size: 24px;"/>
+    <TextField fx:id="usernameField" promptText="Username"/>
+    <TextField fx:id="emailField" promptText="Email"/>
+    <PasswordField fx:id="passwordField" promptText="Password"/>
+    <Button text="Register" onAction="#handleRegister"/>
+    <Hyperlink text="Already have an account? Login" onAction="#handleLoginLink"/>
+</VBox>

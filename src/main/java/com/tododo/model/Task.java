@@ -8,6 +8,7 @@ public class Task {
     private final StringProperty description = new SimpleStringProperty();
     private final StringProperty status = new SimpleStringProperty("tertunda");
     private final StringProperty deadline = new SimpleStringProperty();
+    private final IntegerProperty userId = new SimpleIntegerProperty();
 
     public Task() {
         // Default constructor
@@ -86,6 +87,16 @@ public class Task {
 
     public StringProperty deadlineProperty() {
         return deadline;
+    }
+    
+    public int getUserId() {
+        return userId.get();
+    }
+    public void setUserId(int userId) {
+        this.userId.set(userId);
+    }
+    public IntegerProperty userIdProperty() {
+        return userId;
     }
 
     @Override
