@@ -37,7 +37,8 @@ public class TaskController {
 
     private ObservableList<Task> masterTaskList = FXCollections.observableArrayList();
     private Task selectedTask;
-
+    private TaskDAO taskDAO;
+    
     @FXML
     public void initialize() {
         ToggleGroup group = new ToggleGroup();
@@ -47,13 +48,14 @@ public class TaskController {
 
         // Setup search listener
         searchInput.textProperty().addListener((obs, oldVal, newVal) -> handleSearch());
-        
+
+        filterAll.setSelected(true);
         loadTasksFromDatabase();
     }
 
     @FXML
     private void handleAddTaskDialog() {
-        Task newTask = showTaskDialog(null); // Pass null to indicate a new task
+        Task newTask = showTaskDialog(null);
         if (newTask != null) {
             TaskDAO.addTask(newTask);
             loadTasksFromDatabase();
@@ -67,7 +69,8 @@ public class TaskController {
             showAlert("Gagal", "Tidak ada tugas yang dipilih.");
             return;
         }
-        Task editedTask = showTaskDialog(selectedTask); // Pass the selected task to be edited
+
+        Task editedTask = showTaskDialog(selectedTask);
         if (editedTask != null) {
             TaskDAO.updateTask(editedTask);
             loadTasksFromDatabase();
@@ -81,9 +84,10 @@ public class TaskController {
             showAlert("Gagal", "Tidak ada tugas yang dipilih.");
             return;
         }
-        
+
         boolean confirmed = showDeleteTaskDialog(selectedTask);
         if (confirmed) {
+            TaskDAO.deleteTask(selectedTask);
             loadTasksFromDatabase();
             showAlert("Dihapus", "Tugas berhasil dihapus.");
         }
@@ -96,18 +100,17 @@ public class TaskController {
         loadTasksFromDatabase();
         showAlert("Disegarkan", "Daftar tugas diperbarui.");
     }
-    
+
     private void loadTasksFromDatabase() {
         List<Task> dbTasks = TaskDAO.getAllTasks();
         masterTaskList.setAll(dbTasks);
-        applyFilters(); 
+        applyFilters();
     }
-    
+
     @FXML
     private void applyFilters() {
         ObservableList<Task> filteredList = FXCollections.observableArrayList(masterTaskList);
 
-        // Filter by search keyword
         String keyword = searchInput.getText().toLowerCase().trim();
         if (!keyword.isEmpty()) {
             filteredList = filteredList.filtered(task ->
@@ -116,7 +119,6 @@ public class TaskController {
             );
         }
 
-        // Filter by status (active/completed)
         if (filterActive.isSelected()) {
             filteredList = filteredList.filtered(task -> "tertunda".equalsIgnoreCase(task.getStatus()));
         } else if (filterCompleted.isSelected()) {
@@ -126,7 +128,13 @@ public class TaskController {
         refreshTaskListUI(filteredList);
         updateCountBadges();
     }
-    
+
+    @FXML
+    private void closeAlert() {
+        alertSection.setVisible(false);
+        alertSection.setManaged(false);
+    }
+
     private void refreshTaskListUI(ObservableList<Task> displayList) {
         taskList.getChildren().clear();
 
@@ -156,6 +164,88 @@ public class TaskController {
         }
     }
     
+    @FXML
+    private void filterAll() {
+        List<Task> tasks = taskDAO.getAllTasks();
+        showTaskList(tasks);
+        updateFilterButtonStyles();
+    }
+
+    @FXML
+    private void filterActive() {
+        List<Task> tasks = taskDAO.getActiveTasks(); // misal: status = false
+        showTaskList(tasks);
+        updateFilterButtonStyles();
+    }
+
+    @FXML
+    private void filterCompleted() {
+        List<Task> tasks = taskDAO.getCompletedTasks(); // misal: status = true
+        showTaskList(tasks);
+        updateFilterButtonStyles();
+    }
+
+    @FXML
+    private void handleToggleStatus() {
+        if (selectedTask != null) {
+            boolean newStatus = !selectedTask.isCompleted();
+            selectedTask.setCompleted(newStatus);
+            taskDAO.updateTaskStatus(selectedTask.getId(), newStatus);
+            showAlert("Status tugas diperbarui.");
+            refreshFilteredList();
+        } else {
+            showAlert("Pilih tugas terlebih dahulu.");
+        }
+    }
+
+    @FXML
+    private void handleShowStats() {
+        int total = taskDAO.countAll();
+        int completed = taskDAO.countCompleted();
+        int active = total - completed;
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Statistik Tugas");
+        alert.setHeaderText("📊 Statistik Saat Ini");
+        alert.setContentText(
+            "Total: " + total + "\n" +
+            "Aktif: " + active + "\n" +
+            "Selesai: " + completed
+        );
+        alert.showAndWait();
+    }
+    
+    private void updateFilterButtonStyles() {
+        filterAll.setStyle("");
+        filterActive.setStyle("");
+        filterCompleted.setStyle("");
+
+        switch (currentFilter) {
+            case "ALL" -> filterAll.setStyle("-fx-background-color: lightblue;");
+            case "ACTIVE" -> filterActive.setStyle("-fx-background-color: lightblue;");
+            case "COMPLETED" -> filterCompleted.setStyle("-fx-background-color: lightblue;");
+        }
+    }
+
+    
+    private void showTaskList(List<Task> tasks) {
+        taskList.getChildren().clear();
+        for (Task task : tasks) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/task-item-template.fxml"));
+                HBox node = loader.load();
+                TaskItemController controller = loader.getController();
+                controller.setTask(task);
+                controller.setOnSelectedListener(selected -> selectedTask = selected);
+                taskList.getChildren().add(node);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private String currentFilter = "ALL";
+
     private void handleEditTaskAction(Task task) {
         selectedTask = task;
         handleEditTask();
@@ -165,21 +255,15 @@ public class TaskController {
         selectedTask = task;
         handleDeleteTask();
     }
-    
+
     private Task showTaskDialog(Task task) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AddTaskDialog.fxml"));
             Parent root = loader.load();
 
             AddTaskDialogController controller = loader.getController();
-            String dialogTitle;
-
-            if (task != null) {
-                dialogTitle = "Edit Tugas";
-                controller.setTaskToEdit(task);
-            } else {
-                dialogTitle = "Tambah Tugas";
-            }
+            String dialogTitle = (task != null) ? "Edit Tugas" : "Tambah Tugas";
+            if (task != null) controller.setTaskToEdit(task);
 
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.APPLICATION_MODAL);
@@ -221,7 +305,7 @@ public class TaskController {
         activeCountBadge.setText(String.valueOf(active));
         completedCountBadge.setText(String.valueOf(completed));
     }
-    
+
     private void showAlert(String header, String content) {
         alertMessage.setText(content);
         alertSection.setVisible(true);
@@ -234,13 +318,7 @@ public class TaskController {
         delay.play();
     }
 
-    // Unused method from original code, can be removed if not needed.
-    @FXML private void handleShowStats() {
-        // ... implementation from original code ...
-    }
-    
-    @FXML
-    private void handleSearch() {
+    @FXML private void handleSearch() {
         applyFilters();
     }
 }

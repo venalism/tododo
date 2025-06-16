@@ -1,5 +1,4 @@
 // src/main/java/com/tododo/controller/AddTaskDialogController.java
-
 package com.tododo.controller;
 
 import com.tododo.model.Task;
@@ -19,16 +18,11 @@ public class AddTaskDialogController {
     @FXML private ComboBox<String> statusComboBox;
 
     private Task resultTask;
-    private boolean isEditMode = false;
+    private boolean isEditMode = false; // Flag to determine if we are adding or editing
 
     /**
-     * Returns the task object that was created or edited by the dialog.
-     * @return The resulting Task, or null if the dialog was canceled.
+     * Initializes the controller, setting up the status choices.
      */
-    public Task getResultTask() {
-        return resultTask;
-    }
-
     @FXML
     private void initialize() {
         statusComboBox.setItems(FXCollections.observableArrayList("tertunda", "selesai"));
@@ -36,31 +30,36 @@ public class AddTaskDialogController {
 
     /**
      * Configures the dialog for editing an existing task.
+     * This method is called by TaskController when the user wants to edit a task.
      * It pre-fills the form fields with the task's current data.
      * @param taskToEdit The task to be edited.
      */
     public void setTaskToEdit(Task taskToEdit) {
-        this.isEditMode = true;
-        this.resultTask = taskToEdit;
+        this.isEditMode = true; // Set the flag to edit mode
+        this.resultTask = taskToEdit; // Store the task object that will be modified
 
+        // Populate the UI fields with the task's data
         judulField.setText(taskToEdit.getTitle());
         deskripsiField.setText(taskToEdit.getDescription());
         statusComboBox.setValue(taskToEdit.getStatus());
 
-        // FIX: Only parse the deadline if it is not null and not an empty string.
         String deadline = taskToEdit.getDeadline();
         if (deadline != null && !deadline.isEmpty()) {
             try {
                 deadlinePicker.setValue(LocalDate.parse(deadline));
             } catch (DateTimeParseException e) {
                 System.err.println("Could not parse deadline: " + deadline);
-                deadlinePicker.setValue(null); // Set to null if parsing fails
+                deadlinePicker.setValue(null);
             }
         } else {
             deadlinePicker.setValue(null);
         }
     }
-
+    
+    /**
+     * Handles the save action. It checks if the dialog is in edit mode
+     * to either update the existing task or create a new one.
+     */
     @FXML
     private void handleSave() {
         String title = judulField.getText().trim();
@@ -74,17 +73,27 @@ public class AddTaskDialogController {
         }
 
         if (isEditMode) {
-            // In edit mode, update the properties of the existing task object
+            // In edit mode, update the properties of the existing task object.
+            // Because `resultTask` is a reference to the original object, these changes
+            // will be reflected in the TaskController.
             resultTask.setTitle(title);
             resultTask.setDescription(description);
             resultTask.setStatus(status);
             resultTask.setDeadline(deadline);
         } else {
-            // In add mode, create a new task object
+            // In add mode, create a brand new task object
             resultTask = new Task(title, description, status, deadline);
         }
 
         closeDialog();
+    }
+
+    /**
+     * Returns the task object that was created or edited.
+     * @return The resulting Task, or null if the dialog was canceled.
+     */
+    public Task getResultTask() {
+        return resultTask;
     }
 
     @FXML

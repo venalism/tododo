@@ -4,6 +4,5 @@ com\tododo\db\DatabaseConnection.class
 com\tododo\db\TaskDAO.class
 com\tododo\controller\AddTaskDialogController.class
 com\tododo\controller\DeleteTaskDialogController.class
-com\tododo\controller\EditTaskDialogController.class
 com\tododo\controller\TaskController.class
 com\tododo\model\Main.class
