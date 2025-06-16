@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.tododo.controller.TaskController"
+            style="-fx-background-color: #FAF5FF;">
+
+    <!-- Fixed Header Navigation -->
+    <top>
+        <VBox style="-fx-effect: dropshadow(three-pass-box, rgba(107,70,193,0.1), 10, 0, 0, 5);">
+            <!-- Navigation Bar -->
+            <HBox style="-fx-background-color: rgba(107, 70, 193, 0.3); -fx-padding: 16 30; -fx-alignment: center-left;">
+                <Label text="To-DoList" 
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #553C9A; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 1, 1);" />
+                <Pane HBox.hgrow="ALWAYS" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox spacing="20" style="-fx-padding: 30;">
+                
+                <!-- Alert/Notification Section -->
+                <HBox fx:id="alertSection" spacing="10" style="-fx-background-color: #d4edda; -fx-background-radius: 8; -fx-padding: 12 16; -fx-border-color: #c3e6cb; -fx-border-radius: 8; -fx-alignment: center-left;" visible="false">
+                    <Label text="✅" style="-fx-font-size: 16px;"/>
+                    <Label fx:id="alertMessage" text="Operasi berhasil!" style="-fx-font-size: 14px; -fx-text-fill: #155724;"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="closeAlertBtn" text="×" onAction="#closeAlert" 
+                            style="-fx-background-color: transparent; -fx-text-fill: #155724; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+                </HBox>
+
+                <!-- Page Header with Search -->
+                <HBox spacing="20" style="-fx-alignment: center;">
+                    <!-- Page Title -->
+                    <HBox spacing="15" style="-fx-alignment: center-left;" HBox.hgrow="NEVER">
+                        <Label text="📋" style="-fx-font-size: 48px;"/>
+                        <VBox spacing="4">
+                            <Label text="Daftar Tugas" 
+                                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+                            <HBox spacing="8" style="-fx-alignment: center-left;">
+                                <Label text="📊" style="-fx-font-size: 14px;"/>
+                                <Label text="Kelola tugas-tugas Anda" 
+                                       style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                    
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    
+                    <!-- Search Section -->
+                    <HBox spacing="10" style="-fx-alignment: center;" HBox.hgrow="NEVER">
+                        <TextField fx:id="searchInput" 
+                                   promptText="Cari tugas..." 
+                                   style="-fx-pref-width: 300; -fx-pref-height: 40; -fx-background-radius: 8; -fx-border-color: #d1d5db; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+                        <Button text="🔍" onAction="#handleSearch"
+                                style="-fx-background-color: #6B7280; -fx-text-fill: white; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 50;"/>
+                    </HBox>
+                    
+                    <!-- Add Task Button -->
+	                    <Button text="➕ Tambah Tugas" onAction="#handleAddTaskDialog"
+	        				style="-fx-background-color: #6B46C1; -fx-text-fill: white; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 150; -fx-font-weight: bold;" />
+                    </HBox>
+
+                <!-- Task List Card -->
+                <VBox spacing="0" style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 4);">
+                    
+                    <!-- Card Header with Tabs -->
+                    <HBox spacing="0" style="-fx-background-color: white; -fx-background-radius: 16 16 0 0; -fx-padding: 20 0 0 0;">
+                        <HBox spacing="0" style="-fx-alignment: center;" HBox.hgrow="ALWAYS">
+                            <!-- Tab All -->
+                            <ToggleButton fx:id="filterAll" text="Semua" onAction="#filterAll"
+                                    style="-fx-background-color: transparent; -fx-text-fill: #6B46C1; -fx-font-weight: bold; -fx-pref-height: 50; -fx-pref-width: 150; -fx-border-color: #6B46C1; -fx-border-width: 0 0 3 0; -fx-background-radius: 0;">
+                                <graphic>
+                                    <HBox spacing="8" style="-fx-alignment: center;">
+                                        <Label text="Semua"/>
+                                        <Label fx:id="allCountBadge" text="0" 
+                                               style="-fx-background-color: #6B7280; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-size: 12px;"/>
+                                    </HBox>
+                                </graphic>
+                            </ToggleButton>
+                            
+                            <!-- Tab Active -->
+                            <ToggleButton fx:id="filterActive" text="Aktif" onAction="#filterActive"
+                                    style="-fx-background-color: transparent; -fx-text-fill: #6B7280; -fx-font-weight: bold; -fx-pref-height: 50; -fx-pref-width: 150; -fx-background-radius: 0;">
+                                <graphic>
+                                    <HBox spacing="8" style="-fx-alignment: center;">
+                                        <Label text="Aktif"/>
+                                        <Label fx:id="activeCountBadge" text="0" 
+                                               style="-fx-background-color: #6B46C1; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-size: 12px;"/>
+                                    </HBox>
+                                </graphic>
+                            </ToggleButton>
+                            
+                            <!-- Tab Completed -->
+                            <ToggleButton fx:id="filterCompleted" text="Selesai" onAction="#filterCompleted"
+                                    style="-fx-background-color: transparent; -fx-text-fill: #6B7280; -fx-font-weight: bold; -fx-pref-height: 50; -fx-pref-width: 150; -fx-background-radius: 0;">
+                                <graphic>
+                                    <HBox spacing="8" style="-fx-alignment: center;">
+                                        <Label text="Selesai"/>
+                                        <Label fx:id="completedCountBadge" text="0" 
+                                               style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-size: 12px;"/>
+                                    </HBox>
+                                </graphic>
+                            </ToggleButton>
+                        </HBox>
+                    </HBox>
+                    
+                    <!-- Divider -->
+                    <Separator style="-fx-background-color: #e5e7eb;"/>
+                    
+                    <!-- Task List Content -->
+                    <VBox fx:id="taskListContainer" spacing="0" style="-fx-padding: 0;">
+                        <!-- Empty State -->
+                        <VBox fx:id="emptyState" spacing="20" style="-fx-alignment: center; -fx-padding: 60;">
+                            <Label text="📋" style="-fx-font-size: 64px;"/>
+                            <Label text="Belum Ada Tugas" 
+                                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+                            <Label text="Mulai dengan menambahkan tugas baru" 
+                                   style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"/>
+                        </VBox>
+                        
+                        <!-- Task List -->
+                        <ScrollPane fx:id="taskScrollPane" fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-max-height: 400;">
+                            <VBox fx:id="taskList" spacing="0"/>
+                        </ScrollPane>
+                    </VBox>
+                </VBox>
+
+                <!-- Quick Actions -->
+                <HBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 2); -fx-alignment: center-left;">
+                    <Label text="⚡ Aksi Cepat:" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                    
+                    <Button text="✏️ Edit" onAction="#handleEditTask"
+                            style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 100; -fx-font-weight: bold;"/>
+                    
+                    <Button text="🗑️ Hapus" onAction="#handleDeleteTask"
+                            style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 100; -fx-font-weight: bold;"/>
+                    
+                    <Button text="✅ Toggle" onAction="#handleToggleStatus"
+                            style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 100; -fx-font-weight: bold;"/>
+                    
+                    <Separator orientation="VERTICAL" style="-fx-pref-height: 30;"/>
+                    
+                    <Button text="🔄 Refresh" onAction="#handleRefresh"
+                            style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 100; -fx-font-weight: bold;"/>
+                    
+                    <Button text="📊 Stats" onAction="#handleShowStats"
+                            style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 8; -fx-pref-height: 40; -fx-pref-width: 100; -fx-font-weight: bold;"/>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- Footer -->
+    <bottom>
+        <HBox style="-fx-background-color: #f9fafb; -fx-padding: 15 30; -fx-border-color: #e5e7eb; -fx-border-width: 1 0 0 0; -fx-alignment: center-left;">
+            <Label text="💡 Tip: Klik dua kali pada tugas untuk edit cepat" 
+                   style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+            <Pane HBox.hgrow="ALWAYS" />
+            <Label text="To-DoList - Inspired by Laravel Design" 
+                   style="-fx-font-size: 12px; -fx-text-fill: #9ca3af;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" xmlns:fx="http://javafx.com/fxml" fx:controller="com.tododo.controller.DeleteTaskDialogController" style="-fx-padding: 20;">
+    <Label fx:id="messageLabel" wrapText="true" style="-fx-font-size: 14px;" />
+    <Label fx:id="taskTitleLabel" style="-fx-font-weight: bold;" />
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Batal" onAction="#handleCancel" />
+        <Button text="Hapus" onAction="#handleDelete" style="-fx-background-color: #ef4444; -fx-text-fill: white;" />
+    </HBox>
+</VBox>

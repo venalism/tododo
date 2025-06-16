@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<!-- Single Task Item Layout -->
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.tododo.controller.TaskItemController"
+      spacing="15" 
+      style="-fx-background-color: white; -fx-padding: 20; -fx-border-color: #f3f4f6; -fx-border-width: 0 0 1 0; -fx-alignment: center-left;"
+      fx:id="taskItemContainer">
+    
+    <!-- Checkbox for Status Toggle -->
+    <CheckBox fx:id="statusCheckbox" 
+              onAction="#toggleTaskStatus"
+              style="-fx-scale-x: 1.2; -fx-scale-y: 1.2;"/>
+    
+    <!-- Main Task Content -->
+    <VBox spacing="8" HBox.hgrow="ALWAYS">
+        <!-- Task Title -->
+        <Label fx:id="taskTitle" 
+               text="Sample Task Title"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1f2937;"
+               wrapText="true"/>
+        
+        <!-- Task Description -->
+        <Label fx:id="taskDescription" 
+               text="Sample task description that might be longer..."
+               style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"
+               wrapText="true"/>
+        
+        <!-- Badges Row -->
+        <HBox spacing="8" style="-fx-alignment: center-left;">
+            <!-- Deadline Badge -->
+            <HBox fx:id="deadlineBadge" 
+                  spacing="4" 
+                  style="-fx-background-color: #dbeafe; -fx-background-radius: 12; -fx-padding: 4 8; -fx-alignment: center;">
+                <Label text="📅" style="-fx-font-size: 12px;"/>
+                <Label fx:id="deadlineText" 
+                       text="25 Des 2024" 
+                       style="-fx-font-size: 12px; -fx-text-fill: #1e40af; -fx-font-weight: bold;"/>
+            </HBox>
+            
+            <!-- Status Badge -->
+            <HBox fx:id="statusBadge" 
+                  spacing="4" 
+                  style="-fx-background-color: #fef3c7; -fx-background-radius: 12; -fx-padding: 4 8; -fx-alignment: center;">
+                <Label fx:id="statusIcon" text="🕐" style="-fx-font-size: 12px;"/>
+                <Label fx:id="statusText" 
+                       text="Tertunda" 
+                       style="-fx-font-size: 12px; -fx-text-fill: #92400e; -fx-font-weight: bold;"/>
+            </HBox>
+            
+            <!-- Priority Badge (if needed) -->
+            <HBox fx:id="priorityBadge" 
+                  spacing="4" 
+                  style="-fx-background-color: #fee2e2; -fx-background-radius: 12; -fx-padding: 4 8; -fx-alignment: center;"
+                  visible="false">
+                <Label text="🔥" style="-fx-font-size: 12px;"/>
+                <Label fx:id="priorityText" 
+                       text="Tinggi" 
+                       style="-fx-font-size: 12px; -fx-text-fill: #991b1b; -fx-font-weight: bold;"/>
+            </HBox>
+        </HBox>
+    </VBox>
+    
+    <!-- Action Buttons -->
+    <VBox spacing="8" style="-fx-alignment: center;">
+        <!-- Edit Button -->
+        <Button fx:id="editButton" 
+                onAction="#handleEdit"
+                style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-background-radius: 6; -fx-pref-height: 32; -fx-pref-width: 32; -fx-font-size: 12px;">
+            <graphic>
+                <Label text="✏️" style="-fx-text-fill: white;"/>
+            </graphic>
+        </Button>
+        
+        <!-- Delete Button -->
+        <Button fx:id="deleteButton" 
+                onAction="#handleDelete"
+                style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 6; -fx-pref-height: 32; -fx-pref-width: 32; -fx-font-size: 12px;">
+            <graphic>
+                <Label text="🗑️" style="-fx-text-fill: white;"/>
+            </graphic>
+        </Button>
+    </VBox>
+</HBox>
