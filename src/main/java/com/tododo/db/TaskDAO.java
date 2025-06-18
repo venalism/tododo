@@ -81,15 +81,36 @@ public class TaskDAO {
     // Tambah task baru
     public static void addTask(Task task) {
         User loggedInUser = Main.getLoggedInUser();
-        if (loggedInUser == null) return;
+        if (loggedInUser == null) {
+            System.err.println("Error: No user is logged in. Cannot add task.");
+            return;
+        }
 
         String sql = "INSERT INTO tasks(title, description, status, deadline, user_id) VALUES (?, ?, ?, ?, ?)";
+        
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            // ... set other parameters  // <-- INI MASALAHNYA
+            
+            // Atur semua parameter dari objek Task
+            pstmt.setString(1, task.getTitle());
+            pstmt.setString(2, task.getDescription());
+            pstmt.setString(3, task.getStatus());
+            pstmt.setString(4, task.getDeadline());
             pstmt.setInt(5, loggedInUser.getId());
-            // ... rest of the method
+
+            int affectedRows = pstmt.executeUpdate();
+
+            // (Opsional tapi direkomendasikan) Dapatkan ID yang dihasilkan dan atur pada objek task
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        task.setId(generatedKeys.getInt(1));
+                    }
+                }
+            }
+
         } catch (SQLException e) {
+            System.err.println("Database error in addTask: " + e.getMessage());
             e.printStackTrace();
         }
     }
