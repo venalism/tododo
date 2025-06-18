@@ -27,7 +27,7 @@ public class TaskDAO {
                 title TEXT NOT NULL,
                 description TEXT NOT NULL,
                 status TEXT NOT NULL,
-                deadline TEXT
+                deadline TEXT,
                 user_id INTEGER,
         		FOREIGN KEY (user_id) REFERENCES users (id)
             );

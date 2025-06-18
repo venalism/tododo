@@ -1,21 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml" fx:controller="com.tododo.controller.AddTaskDialogController" style="-fx-padding: 20;">
-    <Label text="Tambah Tugas Baru" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-
-    <TextField fx:id="judulField" promptText="Judul Tugas" />
-    <TextArea fx:id="deskripsiField" promptText="Deskripsi" prefRowCount="3"/>
-    <DatePicker fx:id="deadlinePicker" />
-
-    <ComboBox fx:id="statusComboBox" promptText="Pilih Status">
-    </ComboBox>
-
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Batal" onAction="#handleCancel" />
-        <Button text="Simpan" onAction="#handleSave" defaultButton="true"/>
+<VBox fx:controller="com.tododo.controller.AddTaskDialogController"
+      stylesheets="@/styles.css"
+      styleClass="dialog-pane"
+      spacing="15"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1">
+    
+    <VBox spacing="5">
+        <Label text="Judul Tugas" />
+        <TextField fx:id="judulField" promptText="e.g., Design new UI mockups" />
+    </VBox>
+    
+    <VBox spacing="5">
+        <Label text="Deskripsi" />
+        <TextArea fx:id="deskripsiField" promptText="e.g., Create mockups for the login and dashboard pages." prefHeight="100" />
+    </VBox>
+    
+    <HBox spacing="15">
+        <VBox HBox.hgrow="ALWAYS" spacing="5">
+            <Label text="Deadline" />
+            <DatePicker fx:id="deadlinePicker" promptText="Select a date" prefWidth="Infinity"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" spacing="5">
+            <Label text="Status" />
+            <ComboBox fx:id="statusComboBox" promptText="Select status" prefWidth="Infinity"/>
+        </VBox>
     </HBox>
+    
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <padding>
+            <Insets top="15" />
+        </padding>
+        <Button text="Cancel" onAction="#handleCancel" styleClass="button-secondary" />
+        <Button text="Save Task" onAction="#handleSave" styleClass="button-primary" />
+    </HBox>
+
 </VBox>

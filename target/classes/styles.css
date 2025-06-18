@@ -1,0 +1,117 @@
+/* General Styles */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #f3f4f6;
+}
+
+/* Card-like container for Login and Register */
+.card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12px;
+    -fx-padding: 32px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0, 2);
+    -fx-max-width: 400px;
+}
+
+/* Dialog Pane Style */
+.dialog-pane {
+    -fx-background-color: #ffffff;
+    -fx-padding: 24px;
+}
+
+/* Headings and Titles */
+.title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-fill: #111827;
+}
+
+.subtitle {
+    -fx-font-size: 14px;
+    -fx-fill: #4b5563;
+}
+
+/* General Input Control Styling */
+.text-field,
+.password-field,
+.text-area,
+.combo-box,
+.date-picker > .text-field {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 8px;
+    -fx-border-color: #d1d5db;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+}
+
+.text-area {
+    -fx-wrap-text: true;
+}
+
+/* Focused State for Input Controls */
+.text-field:focused,
+.password-field:focused,
+.text-area:focused,
+.combo-box:focused,
+.date-picker:focused > .text-field {
+    -fx-border-color: #2563eb;
+    -fx-background-color: #ffffff;
+}
+
+/* Primary Button (e.g., Save, Login) */
+.button-primary {
+    -fx-background-color: #16a34a;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 18px;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #15803d;
+}
+
+/* Secondary Button (e.g., Cancel) */
+.button-secondary {
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #1f2937;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 18px;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #d1d5db;
+}
+
+/* Danger Button (e.g., Delete) */
+.button-danger {
+    -fx-background-color: #dc2626;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 18px;
+    -fx-cursor: hand;
+}
+
+.button-danger:hover {
+    -fx-background-color: #b91c1c;
+}
+
+/* Hyperlink Style */
+.hyperlink {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2563eb;
+    -fx-border-color: transparent;
+}
+
+.hyperlink:hover {
+    -fx-underline: true;
+}
