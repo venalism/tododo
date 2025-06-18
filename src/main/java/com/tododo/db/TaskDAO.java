@@ -43,10 +43,13 @@ public class TaskDAO {
     // Ambil semua task dari database
     public static List<Task> getAllTasks() {
         User loggedInUser = Main.getLoggedInUser();
-        if (loggedInUser == null) return new ArrayList<>(); // Or handle error
+        if (loggedInUser == null) {
+            System.err.println("Error: No user is logged in. Cannot fetch tasks.");
+            return new ArrayList<>(); // Return an empty list if no user is logged in
+        }
 
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT * FROM tasks WHERE user_id = ?";
+        String sql = "SELECT id, title, description, status, deadline, user_id FROM tasks WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -55,13 +58,21 @@ public class TaskDAO {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                // ... create Task object
-                Task task = new Task(/*...params...*/);
+                // Buat objek Task dengan data dari database
+                Task task = new Task(
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getString("deadline")
+                );
+                // Atur ID dan User ID secara terpisah
                 task.setId(rs.getInt("id"));
-                task.setUserId(rs.getInt("user_id")); // Set user ID
+                task.setUserId(rs.getInt("user_id"));
+                
                 tasks.add(task);
             }
         } catch (SQLException e) {
+            System.err.println("Database error in getAllTasks: " + e.getMessage());
             e.printStackTrace();
         }
         return tasks;
@@ -75,7 +86,7 @@ public class TaskDAO {
         String sql = "INSERT INTO tasks(title, description, status, deadline, user_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            // ... set other parameters
+            // ... set other parameters  // <-- INI MASALAHNYA
             pstmt.setInt(5, loggedInUser.getId());
             // ... rest of the method
         } catch (SQLException e) {
