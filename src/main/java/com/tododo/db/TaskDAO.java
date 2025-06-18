@@ -39,82 +39,84 @@ public class TaskDAO {
             e.printStackTrace();
         }
     }
+    
+ // venalism/tododo/tododo-1ad5fea5f4fb9fc5db25b129ae25673694c688d5/src/main/java/com/tododo/db/TaskDAO.java
 
-    // Ambil semua task dari database
-    public static List<Task> getAllTasks() {
-        User loggedInUser = Main.getLoggedInUser();
-        if (loggedInUser == null) {
-            System.err.println("Error: No user is logged in. Cannot fetch tasks.");
-            return new ArrayList<>(); // Return an empty list if no user is logged in
-        }
+ // --- Ganti metode addTask ---
+ public static void addTask(Task task) {
+     User loggedInUser = Main.getLoggedInUser();
+     if (loggedInUser == null) {
+         System.err.println("[DEBUG] Gagal addTask: Tidak ada user yang login.");
+         return;
+     }
 
-        List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT id, title, description, status, deadline, user_id FROM tasks WHERE user_id = ?";
+     System.out.println("[DEBUG] Memanggil addTask untuk User ID: " + loggedInUser.getId());
+     System.out.println("[DEBUG]    -> Judul Task: " + task.getTitle());
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, loggedInUser.getId());
-            ResultSet rs = pstmt.executeQuery();
+     String sql = "INSERT INTO tasks(title, description, status, deadline, user_id) VALUES (?, ?, ?, ?, ?)";
+     
+     try (Connection conn = DatabaseConnection.getConnection();
+          PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+         
+         pstmt.setString(1, task.getTitle());
+         pstmt.setString(2, task.getDescription());
+         pstmt.setString(3, task.getStatus());
+         pstmt.setString(4, task.getDeadline());
+         pstmt.setInt(5, loggedInUser.getId());
 
-            while (rs.next()) {
-                // Buat objek Task dengan data dari database
-                Task task = new Task(
-                    rs.getString("title"),
-                    rs.getString("description"),
-                    rs.getString("status"),
-                    rs.getString("deadline")
-                );
-                // Atur ID dan User ID secara terpisah
-                task.setId(rs.getInt("id"));
-                task.setUserId(rs.getInt("user_id"));
-                
-                tasks.add(task);
-            }
-        } catch (SQLException e) {
-            System.err.println("Database error in getAllTasks: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return tasks;
-    }
+         int affectedRows = pstmt.executeUpdate();
 
-    // Tambah task baru
-    public static void addTask(Task task) {
-        User loggedInUser = Main.getLoggedInUser();
-        if (loggedInUser == null) {
-            System.err.println("Error: No user is logged in. Cannot add task.");
-            return;
-        }
+         if (affectedRows > 0) {
+             System.out.println("[DEBUG] addTask BERHASIL. 1 baris ditambahkan.");
+         } else {
+             System.err.println("[DEBUG] addTask GAGAL. Tidak ada baris yang ditambahkan.");
+         }
 
-        String sql = "INSERT INTO tasks(title, description, status, deadline, user_id) VALUES (?, ?, ?, ?, ?)";
-        
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
-            // Atur semua parameter dari objek Task
-            pstmt.setString(1, task.getTitle());
-            pstmt.setString(2, task.getDescription());
-            pstmt.setString(3, task.getStatus());
-            pstmt.setString(4, task.getDeadline());
-            pstmt.setInt(5, loggedInUser.getId());
+     } catch (SQLException e) {
+         System.err.println("[DEBUG] SQLException di addTask: " + e.getMessage());
+         e.printStackTrace();
+     }
+ }
 
-            int affectedRows = pstmt.executeUpdate();
 
-            // (Opsional tapi direkomendasikan) Dapatkan ID yang dihasilkan dan atur pada objek task
-            if (affectedRows > 0) {
-                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        task.setId(generatedKeys.getInt(1));
-                    }
-                }
-            }
+ // --- Ganti metode getAllTasks ---
+ public static List<Task> getAllTasks() {
+     User loggedInUser = Main.getLoggedInUser();
+     if (loggedInUser == null) {
+         System.err.println("[DEBUG] Gagal getAllTasks: Tidak ada user yang login.");
+         return new ArrayList<>();
+     }
+     
+     System.out.println("[DEBUG] Memanggil getAllTasks untuk User ID: " + loggedInUser.getId());
+     List<Task> tasks = new ArrayList<>();
+     String sql = "SELECT id, title, description, status, deadline, user_id FROM tasks WHERE user_id = ?";
 
-        } catch (SQLException e) {
-            System.err.println("Database error in addTask: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+     try (Connection conn = DatabaseConnection.getConnection();
+          PreparedStatement pstmt = conn.prepareStatement(sql)) {
+         
+         pstmt.setInt(1, loggedInUser.getId());
+         ResultSet rs = pstmt.executeQuery();
 
+         while (rs.next()) {
+             Task task = new Task(
+                 rs.getString("title"),
+                 rs.getString("description"),
+                 rs.getString("status"),
+                 rs.getString("deadline")
+             );
+             task.setId(rs.getInt("id"));
+             task.setUserId(rs.getInt("user_id"));
+             tasks.add(task);
+         }
+         
+         System.out.println("[DEBUG] getAllTasks menemukan " + tasks.size() + " task.");
+
+     } catch (SQLException e) {
+         System.err.println("[DEBUG] SQLException di getAllTasks: " + e.getMessage());
+         e.printStackTrace();
+     }
+     return tasks;
+ }
 
     // Hapus task berdasarkan ID
     public static boolean deleteTask(Task task) {
