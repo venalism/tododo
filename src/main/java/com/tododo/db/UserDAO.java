@@ -67,4 +67,44 @@ public class UserDAO {
         }
         return null;
     }
+    
+    public static boolean updateUser(User user) {
+        // Jika password tidak kosong, hash password baru. Jika kosong, jangan perbarui password.
+        boolean isPasswordProvided = user.getPassword() != null && !user.getPassword().isEmpty();
+        
+        String sql = isPasswordProvided
+            ? "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?"
+            : "UPDATE users SET username = ?, email = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getEmail());
+            
+            if (isPasswordProvided) {
+                pstmt.setString(3, PasswordUtils.hashPassword(user.getPassword()));
+                pstmt.setInt(4, user.getId());
+            } else {
+                pstmt.setInt(3, user.getId());
+            }
+
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteUser(int userId) {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

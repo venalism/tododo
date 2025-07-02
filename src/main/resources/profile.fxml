@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="20.0" styleClass="card" stylesheets="@/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tododo.controller.ProfileController">
+   <children>
+      <Label styleClass="title" text="Profil Pengguna" />
+      <VBox spacing="10.0">
+         <children>
+            <Label text="Username:">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="usernameLabel" text="[Username]" />
+            <Label text="Email:">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="emailLabel" text="[Email]" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+      <Button onAction="#handleEditAccount" styleClass="button-primary" text="Edit Akun" />
+      <Button onAction="#handleLogout" styleClass="button-secondary" text="Logout" />
+      <Button onAction="#handleDeleteAccount" styleClass="button-danger" text="Hapus Akun" />
+      <Button onAction="#handleBack" text="Kembali ke Tugas" />
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

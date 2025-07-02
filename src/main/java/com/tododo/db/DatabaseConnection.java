@@ -9,8 +9,7 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:sqlite:./tododo.db";  // Path untuk database SQLite
 
     // Fungsi untuk mendapatkan koneksi ke SQLite
- // venalism/tododo/tododo-1ad5fea5f4fb9fc5db25b129ae25673694c688d5/src/main/java/com/tododo/db/DatabaseConnection.java
-
+ 
     public static Connection getConnection() throws SQLException {
         System.out.println("[DEBUG] Meminta koneksi ke database...");
         try {
