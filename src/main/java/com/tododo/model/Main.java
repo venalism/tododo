@@ -1,6 +1,7 @@
 package com.tododo.model;
 
 import com.tododo.controller.LoginController;
+import com.tododo.controller.ProfileController;
 import com.tododo.controller.RegisterController;
 import com.tododo.controller.TaskController;
 import javafx.application.Application;
@@ -62,6 +63,24 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void showProfileView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Profile.fxml"));
+            Scene scene = new Scene(loader.load());
+            ProfileController controller = loader.getController();
+            controller.setMainApp(this);
+            controller.setUser(getLoggedInUser()); // Berikan data pengguna yang sedang login
+            primaryStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void logout() {
+        loggedInUser = null;
+        showLoginView();
     }
     
     public static User getLoggedInUser() {

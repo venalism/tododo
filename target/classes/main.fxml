@@ -29,6 +29,10 @@
             <Button mnemonicParsing="false" onAction="#handleAddTaskDialog" styleClass="button-primary" stylesheets="@/styles.css" text="+ Tambah Tugas Baru" />
         </children>
     </HBox>
+	<HBox alignment="CENTER_LEFT" spacing="10">
+	    <Button onAction="#handleRefresh" text="Segarkan" />
+	    <Button onAction="#handleShowProfile" text="Profil" styleClass="button-secondary" />
+	</HBox>
     <VBox layoutX="50.0" layoutY="100.0" prefHeight="586.0" prefWidth="980.0" spacing="16.0" AnchorPane.bottomAnchor="34.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0">
         <children>
             <HBox style="-fx-background-color: #ffffff; -fx-background-radius: 12; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 1);">

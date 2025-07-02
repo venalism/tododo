@@ -2,6 +2,7 @@
 package com.tododo.controller;
 
 import com.tododo.db.TaskDAO;
+import com.tododo.model.Main;
 import com.tododo.model.Task;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
@@ -39,7 +40,12 @@ public class TaskController {
 
     // Data handling
     private final ObservableList<Task> masterTaskList = FXCollections.observableArrayList();
-    private Task selectedTask; // To keep track of the currently selected task
+    private Task selectedTask;
+    private Main mainApp;
+    
+    public void setMainApp(Main mainApp) {
+        this.mainApp = mainApp;
+    }
 
     @FXML
     public void initialize() {
@@ -115,6 +121,13 @@ public class TaskController {
     @FXML
     private void handleSearch() {
         applyFilters();
+    }
+    
+    @FXML
+    private void handleShowProfile() {
+        if (mainApp != null) {
+            mainApp.showProfileView();
+        }
     }
     
     private void applyFilters() {
