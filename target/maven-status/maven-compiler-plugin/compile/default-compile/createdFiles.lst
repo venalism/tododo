@@ -3,6 +3,7 @@ com\tododo\db\UserDAO.class
 com\tododo\controller\RegisterController.class
 com\tododo\controller\TaskItemController.class
 com\tododo\controller\LoginController.class
+com\tododo\controller\ProfileController.class
 com\tododo\db\DatabaseConnection.class
 com\tododo\db\TaskDAO.class
 com\tododo\utils\PasswordUtils.class

@@ -26,7 +26,7 @@
         <children>
             <Button mnemonicParsing="false" onAction="#handleShowStats" styleClass="button-secondary" stylesheets="@/styles.css" text="Statistik" />
             <Button mnemonicParsing="false" onAction="#handleRefresh" styleClass="button-secondary" stylesheets="@/styles.css" text="Segarkan" />
-            <Button onAction="#handleShowProfile" text="Profil" styleClass="button-secondary" />
+            <Button onAction="#handleShowProfile" text="Profil" stylesheets="@/styles.css" styleClass="button-secondary" />
             <Button mnemonicParsing="false" onAction="#handleAddTaskDialog" styleClass="button-primary" stylesheets="@/styles.css" text="+ Tambah Tugas Baru" />
         </children>
     </HBox>
